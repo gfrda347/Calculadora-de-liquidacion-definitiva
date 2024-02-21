@@ -1,3 +1,5 @@
+from datetime import datetime
+
 def calcular_indemnizacion_despido(salario_mensual, dias_trabajados, tiempo_servicio):
     factor_indemnizacion = min(max(tiempo_servicio, 1), 20)
     indemnizacion = (salario_mensual * dias_trabajados / 360) + factor_indemnizacion
@@ -26,35 +28,52 @@ def calcular_primas(salario_mensual, dias_trabajados_semestre):
     return primas
 
 def calcular_retencion_fuente(base_gravable):
-    retencion_fuente = base_gravable * 0.1  # una retención del 10%
+    retencion_fuente = base_gravable * 0.1  
     return retencion_fuente
 
 def calcular_total_pagar(indemnizacion, vacaciones, cesantias, intereses_cesantias, primas, retencion_fuente):
     total_pagar = indemnizacion + vacaciones + cesantias + intereses_cesantias + primas - retencion_fuente
     return total_pagar
 
-# Entrada de datos por parte del usuario
+# Entrada de datos
+motivo_terminacion = input("Ingrese el motivo de terminación del contrato (despido o renuncia): ")
 salario_mensual = float(input("Ingrese el salario mensual: "))
-dias_trabajados = int(input("Ingrese la cantidad de días trabajados: "))
-tiempo_servicio = int(input("Ingrese el tiempo de servicio en años: "))
-meses_contrato = int(input("Ingrese la cantidad de meses del contrato: "))
-dias_trabajados_semestre = int(input("Ingrese la cantidad de días trabajados en el semestre: "))
+fecha_inicio_labores = input("Ingrese la fecha de inicio de labores (formato: DD/MM/AAAA): ")
+fecha_ultimas_vacaciones = input("Ingrese la fecha de las últimas vacaciones (formato: DD/MM/AAAA): ")
+dias_vacaciones_acumulados = int(input("Ingrese los días de vacaciones acumulados: "))
 
-indemnizacion = calcular_indemnizacion_despido(salario_mensual, dias_trabajados, tiempo_servicio)
-indemnizacion_terminacion = calcular_indemnizacion_por_renuncia(salario_mensual, dias_trabajados, meses_contrato)
+# Convertir las fechas ingresadas a objetos datetime
+fecha_inicio_labores = datetime.strptime(fecha_inicio_labores, "%d/%m/%Y")
+fecha_ultimas_vacaciones = datetime.strptime(fecha_ultimas_vacaciones, "%d/%m/%Y")
+
+# Calcula tiempo de servicio en años
+tiempo_servicio = (datetime.now() - fecha_inicio_labores).days // 365
+
+# Calcula días trabajados desde la última fecha de vacaciones
+dias_trabajados = (datetime.now() - fecha_ultimas_vacaciones).days
+
+# Calcular días trabajados en el semestre (suponiendo que las vacaciones fueron en el semestre actual)
+dias_trabajados_semestre = (datetime.now() - fecha_ultimas_vacaciones).days
+
+if motivo_terminacion.lower() == 'despido':
+    indemnizacion = calcular_indemnizacion_despido(salario_mensual, dias_trabajados, tiempo_servicio)
+elif motivo_terminacion.lower() == 'renuncia':
+    indemnizacion = calcular_indemnizacion_por_renuncia(salario_mensual, dias_trabajados, tiempo_servicio)
+else:
+    print("Motivo de terminación no válido. Debe ser 'despido' o 'renuncia'.")
+    exit()
+
 vacaciones = calcular_vacaciones(salario_mensual, tiempo_servicio)
 cesantias = calcular_cesantias(salario_mensual, dias_trabajados)
 intereses_cesantias = calcular_intereses_cesantias(cesantias, dias_trabajados)
 primas = calcular_primas(salario_mensual, dias_trabajados_semestre)
 
-base_gravable = salario_mensual  # Ajusta la base gravable según tus necesidades
+base_gravable = salario_mensual  
 retencion_fuente = calcular_retencion_fuente(base_gravable)
 
 total_pagar = calcular_total_pagar(indemnizacion, vacaciones, cesantias, intereses_cesantias, primas, retencion_fuente)
 
-# Imprimir resultados
-print(f"Indemnización por despido: {indemnizacion}")
-print(f"Indemnización por terminación de contrato: {indemnizacion_terminacion}")
+print(f"Indemnización: {indemnizacion}")
 print(f"Vacaciones: {vacaciones}")
 print(f"Cesantías: {cesantias}")
 print(f"Intereses de cesantías: {intereses_cesantias}")
