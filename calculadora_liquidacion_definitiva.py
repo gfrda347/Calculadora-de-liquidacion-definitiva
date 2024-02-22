@@ -5,7 +5,7 @@ def calcular_indemnizacion_despido(salario_mensual, dias_trabajados, tiempo_serv
     indemnizacion = (salario_mensual * dias_trabajados / 360) + factor_indemnizacion
     return indemnizacion
 
-def calcular_indemnizacion_por_renuncia(salario_mensual, dias_trabajados, meses_contrato):
+def calcular_indemnizacion_por_renuncia(salario_mensual, dias_trabajados,):
     factor_dias = min(max(1, dias_trabajados // 30), 20)
     indemnizacion = salario_mensual * (dias_trabajados / 360 + factor_dias / 30)
     return indemnizacion
