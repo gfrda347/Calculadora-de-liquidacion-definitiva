@@ -80,3 +80,4 @@ print(f"Intereses de cesantías: {intereses_cesantias}")
 print(f"Primas: {primas}")
 print(f"Retención en la fuente: {retencion_fuente}")
 print(f"Total a pagar: {total_pagar}")
+
