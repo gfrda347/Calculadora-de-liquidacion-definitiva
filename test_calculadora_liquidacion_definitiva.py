@@ -1,69 +1,29 @@
-import unittest
-from liquidacion import Liquidacion
-from calculadora_liquidacion_definitiva import (
-    calcular_indemnizacion_despido,
-    calcular_vacaciones,
-    calcular_cesantias,
-    calcular_total_pagar
-)
+import unittest, datetime
+from liquidacion import Liquidacion, calcular_liquidacion_renuncia
+from calculadora_liquidacion_definitiva import (calcular_indemnizacion_despido, calcular_vacaciones, calcular_cesantias, calcular_total_pagar, SalarioInvalidoError, SaldoAFavorException, FechaInvalidaError, ArgumentosInvalidosError)
 
 class TestLiquidacionEmpleado(unittest.TestCase):
 
     def test_liquidacion_standard(self):
-        # Datos
-        motivo = "Despido"
-        salario_base = 1300000
-        fecha_inicio = "01/01/2020"  
-        dias_vacaciones = 15
-
+        motivo, salario_base, fecha_inicio, dias_vacaciones = "Despido", 1300000, "01/01/2020", "01/01/2023", 15
         # Valores esperados
-        indemnizacion_esperada = 5200000
-        vacaciones_esperadas = 541666
-        cesantias_esperadas = 5466666
-        prima_esperada = 5466666
-        intereses_esperados = 327999
-        retencion_esperada = 1670000
-        total_esperado = 15005333
-
+        indemnizacion_esperada, vacaciones_esperadas, cesantias_esperadas, prima_esperada, intereses_esperados, retencion_esperada, total_esperado = 5310590, 622917, 546666, 731000, 327999, 167000, 7706173
         # Cálculo de liquidación
-        indemnizacion = calcular_indemnizacion_despido(salario_base, fecha_inicio)
-        vacaciones = calcular_vacaciones(salario_base, dias_vacaciones) 
-        cesantias = calcular_cesantias(salario_base, fecha_inicio)  
-        # (Other calculations)
-
-        total = calcular_total_pagar(indemnizacion, vacaciones, cesantias, 
-                                    prima_esperada, intereses_esperados, retencion_esperada)
-        
-        # Asserts
+        indemnizacion, vacaciones, cesantias = calcular_indemnizacion_despido(salario_base, fecha_inicio), calcular_vacaciones(salario_base, dias_vacaciones), calcular_cesantias(salario_base, fecha_inicio)
+        total = calcular_total_pagar(indemnizacion, vacaciones, cesantias, prima_esperada, intereses_esperados, retencion_esperada)
         self.assertEqual(indemnizacion, indemnizacion_esperada)
         self.assertEqual(vacaciones, vacaciones_esperadas)
         self.assertEqual(cesantias, cesantias_esperadas)
-        # (Other assertions)
         self.assertEqual(total, total_esperado)
-    
+
     def test_liquidacion_sin_vacaciones(self):
-        # Datos
-        motivo = "Renuncia voluntaria"
-        salario_base = "12200500"  # Assuming salario_base is expected as a string
-        fecha_inicio = "15/06/2021"
-        dias_vacaciones = 0
-        
-        # Valores esperados 
-        indemnizacion_esperada = 5000000
-        vacaciones_esperadas = 0
-        cesantias_esperadas = 3112500
-        prima_esperada = 416250
-        intereses_esperados = 31125
-        retencion_esperada = 814250  
-        total_esperado = 9374375
-        
-        # Liquidación 
+        motivo, salario_base, fecha_inicio, dias_vacaciones = "Renuncia voluntaria", "12200500", "15/06/2021", 0
+    # Valores esperados
+        indemnizacion_esperada, vacaciones_esperadas, cesantias_esperadas, prima_esperada, intereses_esperados, retencion_esperada, total_esperado = 5000000, 0, 3112500, 416250, 31125, 814250, 9374375
         liquidacion = Liquidacion(motivo, salario_base, fecha_inicio, dias_vacaciones)
         liquidacion.calcular()
-        
-        # Asserts
         self.assertEqual(liquidacion.indemnizacion, indemnizacion_esperada)
-        self.assertEqual(liquidacion.vacaciones, vacaciones_esperadas) 
+        self.assertEqual(liquidacion.vacaciones, vacaciones_esperadas)
         self.assertEqual(liquidacion.cesantias, cesantias_esperadas)
         self.assertEqual(liquidacion.prima, prima_esperada)
         self.assertEqual(liquidacion.intereses, intereses_esperados)
@@ -71,97 +31,130 @@ class TestLiquidacionEmpleado(unittest.TestCase):
         self.assertEqual(liquidacion.total, total_esperado)
 
     def test_liquidacion_vacaciones_utilizadas(self):
-        # Datos
-        motivo = "Terminación de contrato"
-        salario_base = 2000000
-        fecha_inicio = "01/03/2019"
-        ultimas_vacaciones = "01/03/2022"
-        dias_vacaciones = 20
-        
-        # Valores esperados
-        indemnizacion_esperada = 9500000
-        vacaciones_esperadas = 0
-        cesantias_esperadas = 8296000
-        prima_esperada = 877267
-        intereses_esperados = 82960
-        retencion_esperada = 1863226
-        total_esperado = 16893001
-        
-        # Liquidación
-        liquidacion = Liquidacion(motivo, salario_base, fecha_inicio,  
-                                ultimas_vacaciones, dias_vacaciones)
+        motivo, salario_base, fecha_inicio, ultimas_vacaciones, dias_vacaciones = "Terminación de contrato", 2000000, "01/03/2019", "01/03/2022", 20
+    # Valores esperados
+        indemnizacion_esperada, vacaciones_esperadas, cesantias_esperadas, prima_esperada, intereses_esperados, retencion_esperada, total_esperado = 9500000, 0, 8296000, 877267, 82960, 1863226, 16893001
+    # Liquidación
+        liquidacion = Liquidacion(motivo, salario_base, fecha_inicio, ultimas_vacaciones, dias_vacaciones)
         liquidacion.calcular()
-
-        
-        # Asserts
         self.assertEqual(liquidacion.indemnizacion, indemnizacion_esperada)
-        self.assertEqual(liquidacion.vacaciones, vacaciones_esperadas) 
+        self.assertEqual(liquidacion.vacaciones, vacaciones_esperadas)
         self.assertEqual(liquidacion.cesantias, cesantias_esperadas)
         self.assertEqual(liquidacion.prima, prima_esperada)
         self.assertEqual(liquidacion.intereses, intereses_esperados)
         self.assertEqual(liquidacion.retencion, retencion_esperada)
         self.assertEqual(liquidacion.total, total_esperado)
-    
+
     def test_liquidacion_despido(self):
-        # Datos
-        motivo = "Despido"
-        salario_base = 6000000
-        fecha_inicio = "01/07/2018"
-        ultimas_vacaciones = "01/07/2021" 
-        dias_vacaciones = 10
-        
-        # Valores esperados
-        indemnizacion_esperada = 833333
-        vacaciones_esperadas = 0
-        cesantias_esperadas = 23143.5  
-        prima_esperada = 41667
-        intereses_esperados = 230.44
-        retencion_esperada = 1440000  
-        total_esperado = -311427
-        
-        # Liquidación
-        liquidacion = Liquidacion(motivo, salario_base, fecha_inicio,  
-                                ultimas_vacaciones, dias_vacaciones,)
+        motivo, salario_base, fecha_inicio, ultimas_vacaciones, dias_vacaciones = "Despido", 6000000, "01/07/2018", "01/07/2021", 10
+    # Valores esperados
+        indemnizacion_esperada, vacaciones_esperadas, cesantias_esperadas, prima_esperada, intereses_esperados, retencion_esperada, total_esperado = 833333, 0, 23143.5, 41667, 230.44, 1440000, -311427
+    # Liquidación
+        liquidacion = Liquidacion(motivo, salario_base, fecha_inicio, ultimas_vacaciones, dias_vacaciones)
         liquidacion.calcular()
-        
-        # Asserts
         self.assertEqual(liquidacion.indemnizacion, indemnizacion_esperada)
         self.assertEqual(liquidacion.vacaciones, vacaciones_esperadas)
         self.assertEqual(round(liquidacion.cesantias, 2), cesantias_esperadas)
-        self.assertEqual(round(liquidacion.prima, 2), prima_esperada) 
+        self.assertEqual(round(liquidacion.prima, 2), prima_esperada)
         self.assertEqual(round(liquidacion.intereses, 2), intereses_esperados)
         self.assertEqual(round(liquidacion.retencion, 2), retencion_esperada)
         self.assertEqual(round(liquidacion.total, 2), total_esperado)
-        
-    def test_liquidacion_renuncia(self):
-        
-        # Datos
-        salario = 1160000
-        fecha_inicio = "01/01/2022"
-        ultimas_vacaciones = "01/01/2024"
-        dias_vacaciones = 8
-        
-        # Valores esperados
-        vacaciones_utilizadas = 31
-        indemnizacion_esperada = 0
-        cesantias_esperadas = 134.56
-        intereses_cesantias_esperados = 1.35
-        prima_esperada = 76.67
-        retencion_esperada = 0
-        total_esperado = 212.58
 
-        # Liquidación 
-        resultado = calcular_liquidacion_renuncia(salario, fecha_inicio, 
-                                                ultimas_vacaciones, 
-                                                dias_vacaciones)
-        
-        # Asserts
-        self.assertEqual(resultado["vacaciones_utilizadas"], vacaciones_utilizadas)  
+    def test_liquidacion_renuncia_reciente(self):
+        motivo, salario, fecha_inicio, ultimas_vacaciones, dias_vacaciones = "Renuncia voluntaria", 2000000, "15/12/2023", "15/06/2024", 5
+    # Valores esperados
+        vacaciones_utilizadas, indemnizacion_esperada, cesantias_esperadas, prima_esperada, intereses_cesantias_esperados, retencion_esperada, total_esperado = 6, 0, 107200, 26670, 1070, 13490, 122450
+    # Liquidación
+        resultado = calcular_liquidacion_renuncia(salario, fecha_inicio, ultimas_vacaciones, dias_vacaciones)
+        self.assertEqual(resultado["vacaciones_utilizadas"], vacaciones_utilizadas)
         self.assertEqual(resultado["indemnizacion"], indemnizacion_esperada)
-        self.assertEqual(resultado["cesantias"], cesantias_esperadas) 
-        self.assertEqual(resultado["intereses"], intereses_cesantias_esperados)
+        self.assertEqual(round(resultado["cesantias"], 2), cesantias_esperadas)
+        self.assertEqual(round(resultado["prima"], 2), prima_esperada)
+        self.assertEqual(round(resultado["intereses"], 2), intereses_cesantias_esperados)
+        self.assertEqual(round(resultado["retencion"], 2), retencion_esperada)
+        self.assertEqual(round(resultado["total"], 2), total_esperado)
+
+    def test_liquidacion_antiguedad_significativa(self):
+        motivo, salario, fecha_inicio, ultimas_vacaciones, dias_vacaciones = "Renuncia", 5000000, "01/01/2010", "01/01/2013", 30
+    # Valores esperados
+        vacaciones_utilizadas, indemnizacion_esperada, vacaciones_esperadas, cesantias_esperadas, prima_esperada, intereses_cesantias_esperados, retencion_esperada, total_esperado = 12, 71825000, 27500000, 69512500, 57584800, 695125, 19754745, 222363180
+    # Liquidación
+        resultado = calcular_liquidacion_renuncia(salario, fecha_inicio, ultimas_vacaciones, dias_vacaciones)
+        self.assertEqual(resultado["vacaciones_utilizadas"], vacaciones_utilizadas)
+        self.assertTrue(resultado["antiguedad_ajustada"] > 0)  # Ajustar según la implementación real
+        self.assertEqual(resultado["indemnizacion"], indemnizacion_esperada)
+        self.assertEqual(resultado["vacaciones"], vacaciones_esperadas)
+        self.assertEqual(resultado["cesantias"], cesantias_esperadas)
         self.assertEqual(resultado["prima"], prima_esperada)
+        self.assertEqual(resultado["intereses"], intereses_cesantias_esperados)
+        self.assertEqual(resultado["retencion"], retencion_esperada)
         self.assertEqual(resultado["total"], total_esperado)
 
+    def test_liquidacion_despido_injustificado(self):
+        motivo, salario, fecha_inicio, ultimas_vacaciones, dias_vacaciones = "Despido injustificado", 3500000, "01/06/2018", "01/06/2021", 20
+    # Valores esperados
+        vacaciones_utilizadas, antiguedad_ajustada, indemnizacion_esperada, vacaciones_esperadas, cesantias_esperadas, prima_esperada, intereses_cesantias_esperados, retencion_esperada, total_esperado = 36, 6, 21000000, 5833333, 17640000, 21960000, 1764000, 6819733, 61377600
+    # Liquidación
+        resultado = calcular_liquidacion_renuncia(motivo, salario, fecha_inicio, ultimas_vacaciones, dias_vacaciones)
+        self.assertEqual(resultado["vacaciones_utilizadas"], vacaciones_utilizadas)
+        self.assertEqual(resultado["antiguedad_ajustada"], antiguedad_ajustada)
+        self.assertEqual(resultado["indemnizacion"], indemnizacion_esperada)
+        self.assertEqual(resultado["vacaciones"], vacaciones_esperadas)
+        self.assertEqual(resultado["cesantias"], cesantias_esperadas)
+        self.assertEqual(resultado["prima"], prima_esperada)
+        self.assertEqual(resultado["intereses"], intereses_cesantias_esperados)
+        self.assertEqual(resultado["retencion"], retencion_esperada)
+        self.assertEqual(resultado["total"], total_esperado)
+
+    # excepciones
+    def test_salario_invalido(self):
+    # Datos
+        motivo, salario, fecha_inicio, ultimas_vacaciones, dias_vacaciones = "Despido", -2000, "01/01/2021", "01/01/2023", 12
+        try:
+            calcular_liquidacion_renuncia(motivo, salario, fecha_inicio, ultimas_vacaciones, dias_vacaciones)
+        # El código llega aquí si no se lanza excepción
+            self.fail("No se lanzó la excepción SalarioInvalidoError")
+        except SalarioInvalidoError as error:
+        # Verificar mensaje de error
+            self.assertEqual(str(error), "El salario no puede ser negativo")
+
+    def test_fecha_inicio_invalida(self):
+    # Datos
+        motivo, salario, fecha_inicio, ultimas_vacaciones, dias_vacaciones = "Renuncia", 2500000, "01/01/2025", "01/06/2023", 8
+        try:
+            calcular_liquidacion_renuncia(motivo, salario, fecha_inicio, ultimas_vacaciones, dias_vacaciones)
+            self.fail("No se lanzó la excepción FechaInvalidaError")
+        except FechaInvalidaError as error:
+            fecha_actual = datetime.date.today().strftime("%d/%m/%Y")
+            mensaje_esperado = f"La fecha de inicio {fecha_inicio} es inválida. La fecha no puede ser posterior a la actual ({fecha_actual})"
+            self.assertEqual(str(error), mensaje_esperado)
+
+    def test_argumentos_faltantes(self):
+        # Se omiten datos requeridos por la función
+        try:
+            calcular_liquidacion_renuncia("", "", '01/01/2022', "01/06/2022")
+            self.fail("No se lanzo ArgumentosInvalidosError")
+        except ArgumentosInvalidosError as error:
+            self.assertEqual(
+                str(error), "Faltan argumentos obligatorios")
+
+    def test_ningun_argumento(self):
+        # No se envían argumentos
+        try:
+            calcular_liquidacion_renuncia()
+            self.fail("No se lanzo ArgumentosInvalidosError")
+        except ArgumentosInvalidosError as error:
+            self.assertEqual(
+                str(error), "Faltan argumentos obligatorios")
+
+    def test_saldo_a_favor(self):
+    # Datos
+        motivo, salario, fecha_inicio, ultimas_vacaciones, dias_vacaciones = "Despido justificado", 900000, "01/03/2021", "01/06/2023", 5
+        try:
+            calcular_liquidacion_renuncia(motivo, salario, fecha_inicio, ultimas_vacaciones, dias_vacaciones)
+            self.fail("No se lanzó la excepción SaldoAFavorException")
+        except SaldoAFavorException as error:
+            mensaje_esperado = "El total de la liquidación presenta saldo a favor del empleado"
+            self.assertEqual(str(error), mensaje_esperado)
 if __name__ == '__main__':
     unittest.main()
