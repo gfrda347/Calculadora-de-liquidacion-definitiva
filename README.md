@@ -1,5 +1,4 @@
-# Proyecto Ejemplo de la Estructura de un proyecto Python con practicas de Clean Code
-
+# Calculadora de liquidación definitiva
 El archivo README.MD es el lugar donde los usuariso de un proyecto van a buscar las respuestas
 a las preguntas que se hacen antes de poder comenzar a usarlo.
 
