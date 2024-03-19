@@ -5,11 +5,10 @@ a las preguntas que se hacen antes de poder comenzar a usarlo.
 
 Se escribe usando la notación Markdown, que pueden consultar en internet en muchas páginas
 
-Por ejemplo, este Cheat Sheet: https://www.markdownguide.org/cheat-sheet/
-
 ## ¿Quién hizo esto?
 
-Lista de autores (no ponga email, telefonos, nada de informacion privada)
+David Santiago Rodriguez Ruiz
+Victor Monsalve 
 
 ## ¿Qué es y para qué es?
 
