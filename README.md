@@ -1,4 +1,4 @@
-#Proyecto Ejemplo de la Estructura de un Proyecto Python con Prácticas de Clean Code
+##Proyecto Ejemplo de la Estructura de un Proyecto Python con Prácticas de Clean Code
 El archivo README.md es el lugar donde los usuarios de un proyecto van a buscar las respuestas a las preguntas que se hacen antes de poder comenzar a usarlo.
 
 Se escribe usando la notación Markdown, que pueden consultar en internet en muchas páginas.
