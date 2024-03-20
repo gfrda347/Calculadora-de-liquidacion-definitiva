@@ -1,17 +1,17 @@
-##Proyecto Ejemplo de la Estructura de un Proyecto Python con Prácticas de Clean Code
+Proyecto Ejemplo de la Estructura de un Proyecto Python con Prácticas de Clean Code
 El archivo README.md es el lugar donde los usuarios de un proyecto van a buscar las respuestas a las preguntas que se hacen antes de poder comenzar a usarlo.
 
 Se escribe usando la notación Markdown, que pueden consultar en internet en muchas páginas.
 
 Por ejemplo, este Cheat Sheet.
 
-##¿Quiénes lo hicieron?
+¿Quiénes lo hicieron?
 David Santiago Rodríguez Ruiz
 Víctor Manuel Monsalve
 ¿Qué es y para qué es?
 Este proyecto es una calculadora de liquidación definitiva diseñada para facilitar el cálculo de aspectos relacionados con la liquidación laboral en Colombia.
 
-##¿Cómo lo hago funcionar?
+¿Cómo lo hago funcionar?
 Prerrequisitos:
 
 Python instalado en su sistema.
@@ -27,10 +27,10 @@ Ejecute el siguiente comando:
 arduino
 Copy code
 python -m unittest discover ..\tests -p '*test*.py'
-##¿Cómo está hecho?
+¿Cómo está hecho?
 El proyecto sigue una estructura organizativa que promueve prácticas de Clean Code. A continuación se detalla la arquitectura del proyecto, bibliotecas utilizadas y la organización de los módulos:
 
-##Estructura Sugerida:
+Estructura Sugerida:
 
 Carpeta src: Contiene el código fuente de la lógica de la aplicación. Tiene subcarpetas por cada capa de la aplicación.
 
@@ -38,7 +38,7 @@ Carpeta tests: Contiene las pruebas unitarias.
 
 Recuerde que cada carpeta de código fuente debe contener un archivo __init__.py que permite que Python reconozca la carpeta como un Módulo y pueda hacer import.
 
-##Uso
+Uso
 Para ejecutar las pruebas unitarias, desde la carpeta src, use el comando:
 
 css
