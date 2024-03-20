@@ -1,49 +1,52 @@
-# Calculadora de liquidación definitiva
-El archivo README.MD es el lugar donde los usuariso de un proyecto van a buscar las respuestas
-a las preguntas que se hacen antes de poder comenzar a usarlo.
+#Proyecto Ejemplo de la Estructura de un Proyecto Python con Prácticas de Clean Code
+El archivo README.md es el lugar donde los usuarios de un proyecto van a buscar las respuestas a las preguntas que se hacen antes de poder comenzar a usarlo.
 
-Se escribe usando la notación Markdown, que pueden consultar en internet en muchas páginas
+Se escribe usando la notación Markdown, que pueden consultar en internet en muchas páginas.
 
-## ¿Quién hizo esto?
+Por ejemplo, este Cheat Sheet.
 
-David Santiago Rodriguez Ruiz
-Victor Monsalve 
+##¿Quiénes lo hicieron?
+David Santiago Rodríguez Ruiz
+Víctor Manuel Monsalve
+¿Qué es y para qué es?
+Este proyecto es una calculadora de liquidación definitiva diseñada para facilitar el cálculo de aspectos relacionados con la liquidación laboral en Colombia.
 
-## ¿Qué es y para qué es?
+##¿Cómo lo hago funcionar?
+Prerrequisitos:
 
-Describir el propósito del proyecto
+Python instalado en su sistema.
+Ejecución:
+Para ejecutar el programa fuera del entorno de desarrollo, siga estos pasos:
 
-## ¿Cómo lo hago funcionar?
+Clone este repositorio en su máquina local.
 
-- Prerrequisitos: que se debe hacer o tener antes de poder correr este proyecto
-- Ejecución: como hacemos correr el programa, POR FUERA DEL ENTORNO DE DESARROLLO
+Navegue a la carpeta src en la línea de comandos.
 
-## ¿Cómo está hecho?
+Ejecute el siguiente comando:
 
-Describir la arquitectura del proyecto, bibliotecas usadas, dependencias de otros proyectos
+arduino
+Copy code
+python -m unittest discover ..\tests -p '*test*.py'
+##¿Cómo está hecho?
+El proyecto sigue una estructura organizativa que promueve prácticas de Clean Code. A continuación se detalla la arquitectura del proyecto, bibliotecas utilizadas y la organización de los módulos:
 
-Y la organización de los módulos (que hay en cada carpeta)
+##Estructura Sugerida:
 
+Carpeta src: Contiene el código fuente de la lógica de la aplicación. Tiene subcarpetas por cada capa de la aplicación.
 
-## Estructura sugerida
+Carpeta tests: Contiene las pruebas unitarias.
 
-- Carpeta src: Codigo fuente de la logica de la aplicación. Tiene subcarpetas por cada capa de la aplicacion
-- Carpeta tests: Pruebas Unitarias 
+Recuerde que cada carpeta de código fuente debe contener un archivo __init__.py que permite que Python reconozca la carpeta como un Módulo y pueda hacer import.
 
-Recuerde que cada carpeta de código fuente debe contener un archivo __init.py que permite que python
-reconozca la carpeta como un Módulo y pueda hacer import
+##Uso
+Para ejecutar las pruebas unitarias, desde la carpeta src, use el comando:
 
-## Uso
+css
+Copy code
+cleancode-01\src> python -m unittest discover ..\tests -p '*test*.py'
+Para poder ejecutarlas desde la carpeta raíz, debe indicar la ruta de búsqueda donde se encuentran los módulos, incluyendo las siguientes líneas al inicio del módulo de pruebas:
 
-Para ejecutar las pruebas unitarias, desde la carpeta src, use el comando
-
-`
-  cleancode-01\src> python -m unittest discover ..\tests -p '*test*.py'
-`
-Para poder ejecutarlas desde la carpeta raiz, debe indicar la ruta de busqueda donde se encuentran los
-módulos, incluyendo las siguientes lineas al inicio del módulo de pruebas
-
-`
-  import sys
-  sys.path.append("src")
-`
+python
+Copy code
+import sys
+sys.path.append("src")
